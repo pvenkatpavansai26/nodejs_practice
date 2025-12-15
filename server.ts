@@ -1,7 +1,12 @@
 import app from './src/app.ts';
 import {config} from './config/config.ts';
-const startServer = () => {
-  const port = config.port || 5000;;
+import connectDB from './config/db.ts';
+
+const startServer = async () => {
+  
+await connectDB();
+
+  const port = config.port || 5000;
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);  
