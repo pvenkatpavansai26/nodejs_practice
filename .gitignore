@@ -47,6 +47,16 @@ web_modules/
 # TypeScript cache
 *.tsbuildinfo
 
+# Ignore compiled JS emitted earlier
+server.js
+*.js.map
+# Ignore compiled JS next to TS sources
+src/**/*.js
+src/**/*.js.map
+# Ignore generated declaration files and their maps
+*.d.ts
+*.d.ts.map
+
 # Optional npm cache directory
 .npm
 
