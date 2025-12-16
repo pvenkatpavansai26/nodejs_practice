@@ -1,4 +1,4 @@
-import {config as conf } from 'dotenv'
+import {config as conf } from 'dotenv';
 
 conf();
 
