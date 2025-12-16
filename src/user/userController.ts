@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import createHttpError from "http-errors";
 import userModel from "./userModel.ts";
 import bcrypt from "bcrypt";
-import { sub } from "date-fns";
+//import { sub } from "date-fns";
 import pkg from "jsonwebtoken";
 const { sign } = pkg;
 import type { User } from "./userTypes.ts";
@@ -56,23 +56,39 @@ catch (error){
 };
 const loginuser = async (req: Request, res: Response, next: NextFunction) => {
     const {email, password} = req.body || {};
+    let user: User;
     //validation
+try{
     if(!email || !password){    
         return next (createHttpError(400, "All fields are required"));
       }
-      const user = await userModel.findOne({email});
+      user = await userModel.findOne({email});
         if(!user){ 
         return next (createHttpError(404, "User not found"));
       }
-
-      const isMatch = await bcrypt.compare(password, user.password);
+    }
+catch (error){
+    return next (createHttpError(500, "error"));
+}
+try{
+    const isMatch = await bcrypt.compare(password, user.password);
         if(!isMatch){
         return next (createHttpError(401, "Invalid credentials"));
       }
-
+}
+catch (error){
+    return next (createHttpError(500, "error"));
+}
+      
+try{
       const token = sign({sub: user._id}, process.env.jwt_secret as string, {expiresIn: '1d'});
       //response
       res.json ({accessToken: token});
+}catch (error){
+    return next (createHttpError(500, "error"));
+    
+}
+      
     res.json({message: "ok"});
 };
 export { createUser };

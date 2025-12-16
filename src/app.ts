@@ -1,7 +1,7 @@
 import express from "express";
 import type { Request, Response, NextFunction } from "express";
 import type { HttpError } from "http-errors";
-import userRouter from "../user/userRouter.ts";
+import userRouter from "./user/userRouter.ts";
 import createHttpError from "http-errors";
 
 const app = express();
