@@ -17,11 +17,11 @@ app.use('/api/books',bookRouter);
 
 app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
   const statusCode = err.statusCode || err.status || 500;
+  const message = err.message || 'Internal Server Error';
 
   return res.status(statusCode).json({ 
-    message: err.message,
-    // errorStack: err.stack, 
-  
+    message,
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
   });
 })
 
