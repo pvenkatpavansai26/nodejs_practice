@@ -2,7 +2,7 @@ import express from "express";
 import type { Request, Response, NextFunction } from "express";
 import type { HttpError } from "http-errors";
 import userRouter from "./user/userRouter.ts";
-import createHttpError from "http-errors";
+//import createHttpError from "http-errors";
 import bookRouter from "./book/bookRouter.ts";
 
 const app = express();
@@ -20,11 +20,9 @@ app.use("/api/books", bookRouter);
 app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
   const statusCode = err.statusCode || err.status || 500;
   const message = err.message || 'Internal Server Error';
-
-  return res.status(statusCode).json({ 
-    message,
-    error: process.env.NODE_ENV === 'development' ? err.message : undefined
-  });
+if (!res.headersSent) {
+  return res.status(statusCode).json({ message });
+}
 })
 
 export default app;

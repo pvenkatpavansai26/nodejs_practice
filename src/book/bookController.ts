@@ -3,6 +3,7 @@ import createHttpError from "http-errors";
 import fs from "fs/promises";
 import cloudinary from "../config/cloudinary.ts";
 import bookModel from "./bookModel.ts";
+import type { Auth } from "../middleware/authenticate.ts";
 
 type MulterFiles = { [fieldname: string]: Express.Multer.File[] };
 
@@ -41,13 +42,13 @@ const createBook = async (req: Request, res: Response, next: NextFunction) => {
       resource_type: "raw",
     });
 
-    console.log("Cover upload result:", coverUploadResult);
-    console.log("Book upload result:", bookUploadResult);
-    console.log("userId", req.userId);
-
+    const _req = req as Auth;
+    if (!_req.userId) {
+    return next(createHttpError(401, "User not authenticated"));
+    }
     const newBook = await bookModel.create({
       title,
-      author: "64f8b1234567890abcdef123", // replace with real author id from req
+      author: _req.userId, // replace with real author id from req
       genre,
       coverImage: coverUploadResult.secure_url,
       file: bookUploadResult.secure_url,
