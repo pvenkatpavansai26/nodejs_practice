@@ -1,5 +1,5 @@
 import express from "express"
-import { createBook, listBooks, updateBook } from "./bookController.ts";
+import { createBook, listBooks, updateBook, singleBook } from "./bookController.ts";
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -48,5 +48,7 @@ bookRouter.patch("/:id",
 ]), updateBook);
 
 bookRouter.get("/", listBooks);
+
+bookRouter.get("/:id", singleBook);
 
 export default bookRouter;

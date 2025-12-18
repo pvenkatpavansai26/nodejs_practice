@@ -127,7 +127,22 @@ const listBooks = async (req: Request, res: Response, next: NextFunction) => {
         res.json(books);
     }
     catch (error) {
+        console.error("Error listing books:", error);
         return next(createHttpError(500, "Failed to list books"));
     }
 };
-export { createBook, updateBook, listBooks };
+
+const singleBook = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    try {
+        const book = await bookModel.findById(id);
+        if (!book) {
+            return next(createHttpError(404, "Book not found"));
+        }   
+        return res.json(book);
+    } catch (error) {
+        console.error("Error retrieving book:", error);
+        return next(createHttpError(500, "Failed to retrieve book"));
+    }
+};    
+export { createBook, updateBook, listBooks, singleBook };
