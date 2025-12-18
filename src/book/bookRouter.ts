@@ -4,6 +4,7 @@ import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
+import authenticate from "../middleware/authenticate.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,7 +33,9 @@ const upload = multer({
     limits: { fileSize: 50 * 1024 * 1024 } // 50MB limit
 });
 
-bookRouter.post("/", upload.fields([
+bookRouter.post("/", 
+    authenticate,
+    upload.fields([
     { name: "coverImage", maxCount: 1 },
     { name: "bookFile", maxCount: 1 }
 ]), createBook);     
