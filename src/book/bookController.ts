@@ -5,6 +5,7 @@ import cloudinary from "../config/cloudinary.ts";
 import bookModel from "./bookModel.ts";
 import type { Auth } from "../middleware/authenticate.ts";
 
+
 const createBook = async (req: Request, res: Response, next: NextFunction) => {
     console.log("==== createBook HIT ====");
     
@@ -145,4 +146,25 @@ const singleBook = async (req: Request, res: Response, next: NextFunction) => {
         return next(createHttpError(500, "Failed to retrieve book"));
     }
 };    
-export { createBook, updateBook, listBooks, singleBook };
+
+const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    try {
+        const book = await bookModel.findById(id);
+        if (!book) {
+            return next(createHttpError(404, "Book not found"));
+        }
+        const _req = req as Auth;
+        if (book.author.toString() !== _req.userId) {
+            return next(createHttpError(403, "You are not authorized to delete this book"));
+        }
+        await bookModel.findByIdAndDelete(id);
+        res.json({ message: "Book deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting book:", error);
+        return next(createHttpError(500, "Failed to delete book"));
+    }
+
+};
+
+export { createBook, updateBook, listBooks, singleBook, deleteBook };
