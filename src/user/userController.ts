@@ -27,6 +27,7 @@ try{
   }
 }
 catch (error){
+    console.log(error);
     return next (createHttpError(500, "error"));
 }
 
@@ -42,6 +43,7 @@ try{
 });
 }
 catch (error){
+    console.log(error);
     return next (createHttpError(500, "error"));
 }
 try{ 
@@ -51,6 +53,7 @@ const token = sign({sub: newUser._id}, process.env.jwt_secret as string, {expire
 res.json ({accessToken: token});
 }
 catch (error){
+    console.log(error);
     return next (createHttpError(500, "error"));
 }
 };
@@ -62,12 +65,13 @@ try{
     if(!email || !password){    
         return next (createHttpError(400, "All fields are required"));
       }
-      user = await userModel.findOne({email});
+      user = await userModel.findOne({email}).orFail();
         if(!user){ 
         return next (createHttpError(404, "User not found"));
       }
     }
 catch (error){
+    console.log(error);
     return next (createHttpError(500, "error"));
 }
 try{
@@ -77,6 +81,7 @@ try{
       }
 }
 catch (error){
+    console.log(error);
     return next (createHttpError(500, "error"));
 }
       
@@ -85,11 +90,11 @@ try{
       //response
       res.json ({accessToken: token});
 }catch (error){
+    console.log(error);
     return next (createHttpError(500, "error"));
     
 }
       
     res.json({message: "ok"});
 };
-export { createUser };
-export { loginuser };
+export { createUser, loginuser };
