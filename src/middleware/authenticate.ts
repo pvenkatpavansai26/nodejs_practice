@@ -14,8 +14,7 @@ export interface Auth extends Request {
   userId?: string;
 }
 const authenticate = (req: Request, res: Response, next: NextFunction) => {
-
-    console.log("==== AutenticateBook HIT ====");
+  console.log("==== AutenticateBook HIT ====");
   const header = req.headers.authorization;
 
   if (!header) {
